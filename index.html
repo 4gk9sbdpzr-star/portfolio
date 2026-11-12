@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Григорий — монтаж</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b0c;--fg:#f2f0ea;--mute:#8b8a86;--acc:#ff3b2f;--card:#151517;--line:#232326}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+header{padding:72px 0 48px;border-bottom:1px solid var(--line)}
+.kicker{color:var(--acc);font:500 13px Inter;letter-spacing:.14em;text-transform:uppercase}
+h1{font:800 clamp(44px,11vw,140px)/.95 Unbounded,sans-serif;letter-spacing:-.04em;margin:24px 0 40px;text-transform:uppercase}
+h1 span{color:var(--acc)}
+.lead{max-width:640px;color:var(--mute);font-size:18px}
+.stats{display:flex;gap:40px;margin-top:36px;flex-wrap:wrap}
+.stats b{display:block;font:800 32px Unbounded}
+.stats small{color:var(--mute)}
+section{padding:56px 0}
+h2{font:500 14px Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:24px;display:flex;justify-content:space-between}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.card{position:relative;cursor:pointer;border-radius:14px;overflow:hidden;background:var(--card);aspect-ratio:9/16;border:1px solid var(--line);transition:transform .25s,border-color .25s}
+.card.wide{aspect-ratio:16/9}
+.card:hover{transform:translateY(-4px);border-color:var(--acc)}
+.card img,.card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.card video{opacity:0;transition:opacity .2s}
+.card:hover video{opacity:1}
+.meta{position:absolute;left:0;right:0;bottom:0;padding:48px 14px 14px;background:linear-gradient(transparent,rgba(0,0,0,.85))}
+.meta h3{font:500 15px/1.25 Unbounded;letter-spacing:-.01em}
+.meta p{color:#bbb;font-size:12px;margin-top:4px}
+.dur{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);font-size:12px;padding:3px 8px;border-radius:20px}
+.play{position:absolute;top:50%;left:50%;width:56px;height:56px;margin:-28px;border-radius:50%;background:var(--acc);display:grid;place-items:center;opacity:0;transform:scale(.8);transition:.2s}
+.card:hover .play{opacity:1;transform:none}
+.play:after{content:"";border-left:16px solid #fff;border-top:10px solid transparent;border-bottom:10px solid transparent;margin-left:4px}
+.feat{max-width:900px}
+.feat .txt h3{font:800 28px/1.1 Unbounded;margin-bottom:12px}
+.feat .txt p{color:var(--mute)}
+footer{border-top:1px solid var(--line);padding:48px 0 64px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--fg);font:800 clamp(24px,4vw,40px) Unbounded;text-decoration:none}
+footer a:hover{color:var(--acc)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:9;padding:20px}
+.modal.on{display:flex}
+.modal video{max-width:100%;max-height:92vh;border-radius:10px;background:#000}
+.x{position:absolute;top:16px;right:22px;font-size:34px;color:#fff;cursor:pointer;line-height:1}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr);gap:10px}.meta h3{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section>
+  <h1>Портфолио</h1>
+  <div class="feat" id="feat"></div>
+</section>
+
+<section style="padding-top:0">
+  <div class="grid" id="grid"></div>
+</section>
+
+<footer>
+  <div><div class="kicker">Связаться</div><a href="#">Telegram →</a></div>
+  <div style="color:var(--mute);align-self:end">© 2026</div>
+</footer>
+</div>
+
+<div class="modal" id="m"><span class="x" id="x">×</span><video id="mv" controls playsinline></video></div>
+
+<script>
+const W=[
+ {i:5,f:"КТО ТАКОЙ КОНДРАШИН (новый звук, без чёрного).mp4",t:"Кто такой Кондрашин",d:"YouTube",dur:309,wide:1},
+ {i:1,f:"3 - Фальшивые монеты (монтаж v8).mp4",t:"Фальшивомонетчики древности",d:"История денег · AI‑вставки",dur:41},
+ {i:2,f:"5 - Магия инфляции (монтаж v3).mp4",t:"Почему цены растут каждый год",d:"История денег · AI‑вставки",dur:46},
+ {i:8,f:"Тарасенков_настройка_алгоритмов_v22.mp4",t:"Как «настроить» алгоритмы Instagram",d:"Блогер · мемы и графика",dur:73},
+ {i:6,f:"Машина 3.2.mp4",t:"3 ошибки, которые портят ЛКП",d:"Детейлинг‑студия · реклама",dur:67},
+ {i:4,f:"Анна 28.mp4",t:"Квартира МакSим за 400 млн",d:"Эксперт по перепланировкам",dur:47},
+ {i:3,f:"FIRST DAY IN NEPAL.mp4",t:"Непал. День первый",d:"Тревел‑влог",dur:108},
+ {i:7,f:"Нарезка жара 2.mp4",t:"SEREBRO на «Жара Media Awards»",d:"Бэкстейдж для группы SEREBRO",dur:13},
+];
+const fmt=s=>Math.floor(s/60)+":"+String(Math.round(s%60)).padStart(2,"0");
+const card=w=>`<div class="card${w.wide?" wide":""}" data-f="video/${w.i}.mp4">
+  <img src="assets/p${w.i}.jpg" alt="" loading="lazy"><video src="assets/v${w.i}.mp4?v=2" muted loop playsinline preload="none"></video>
+  <span class="dur">${fmt(w.dur)}</span><span class="play"></span>
+  <div class="meta"><h3>${w.t}</h3><p>${w.d}</p></div></div>`;
+const [f,...r]=W;
+feat.innerHTML=card(f);
+grid.innerHTML=r.map(card).join("");
+document.querySelectorAll(".card").forEach(c=>{
+  const v=c.querySelector("video");
+  c.onmouseenter=()=>v.play().catch(()=>{});
+  c.onmouseleave=()=>{v.pause();v.currentTime=0};
+  c.onclick=()=>{mv.src=c.dataset.f;m.classList.add("on");mv.play()};
+});
+const close=()=>{mv.pause();mv.removeAttribute("src");mv.load();m.classList.remove("on")};
+x.onclick=close;m.onclick=e=>{if(e.target===m)close()};
+document.onkeydown=e=>{if(e.key==="Escape")close()};
+</script>
+</body>
+</html>
