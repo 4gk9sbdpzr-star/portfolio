@@ -31,6 +31,9 @@ h2{font:500 14px Inter;letter-spacing:.14em;text-transform:uppercase;color:var(-
 .meta h3{font:500 15px/1.25 Unbounded;letter-spacing:-.01em}
 .meta p{color:#bbb;font-size:12px;margin-top:4px}
 .dur{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);font-size:12px;padding:3px 8px;border-radius:20px}
+.views{position:absolute;top:10px;left:10px;background:var(--acc);color:#fff;font:500 12px Inter;padding:4px 10px;border-radius:20px}
+.ig{display:inline-block;margin-top:8px;color:#fff;font-size:12px;text-decoration:underline;text-underline-offset:3px}
+.ig:hover{color:var(--acc)}
 .play{position:absolute;top:50%;left:50%;width:56px;height:56px;margin:-28px;border-radius:50%;background:var(--acc);display:grid;place-items:center;opacity:0;transform:scale(.8);transition:.2s}
 .card:hover .play{opacity:1;transform:none}
 .play:after{content:"";border-left:16px solid #fff;border-top:10px solid transparent;border-bottom:10px solid transparent;margin-left:4px}
@@ -69,6 +72,7 @@ footer a:hover{color:var(--acc)}
 <script>
 const W=[
  {i:5,f:"КТО ТАКОЙ КОНДРАШИН (новый звук, без чёрного).mp4",t:"Кто такой Кондрашин",d:"YouTube",dur:309,wide:1},
+ {i:9,f:"Артур Чуня.mp4",t:"Как Китай переманил дизайнеров Audi и Rolls‑Royce",d:"Авто · AI‑вставки и графика",dur:66,views:"500K+ просмотров",ig:"https://www.instagram.com/reel/Dfuwkn6zKhE/"},
  {i:1,f:"3 - Фальшивые монеты (монтаж v8).mp4",t:"Фальшивомонетчики древности",d:"История денег · AI‑вставки",dur:41},
  {i:2,f:"5 - Магия инфляции (монтаж v3).mp4",t:"Почему цены растут каждый год",d:"История денег · AI‑вставки",dur:46},
  {i:8,f:"Тарасенков_настройка_алгоритмов_v22.mp4",t:"Как «настроить» алгоритмы Instagram",d:"Блогер · мемы и графика",dur:73},
@@ -80,8 +84,8 @@ const W=[
 const fmt=s=>Math.floor(s/60)+":"+String(Math.round(s%60)).padStart(2,"0");
 const card=w=>`<div class="card${w.wide?" wide":""}" data-f="video/${w.i}.mp4">
   <img src="assets/p${w.i}.jpg" alt="" loading="lazy"><video src="assets/v${w.i}.mp4?v=2" muted loop playsinline preload="none"></video>
-  <span class="dur">${fmt(w.dur)}</span><span class="play"></span>
-  <div class="meta"><h3>${w.t}</h3><p>${w.d}</p></div></div>`;
+  <span class="dur">${fmt(w.dur)}</span>${w.views?`<span class="views">🔥 ${w.views}</span>`:""}<span class="play"></span>
+  <div class="meta"><h3>${w.t}</h3><p>${w.d}</p>${w.ig?`<a class="ig" href="${w.ig}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Смотреть в Instagram →</a>`:""}</div></div>`;
 const [f,...r]=W;
 feat.innerHTML=card(f);
 grid.innerHTML=r.map(card).join("");
